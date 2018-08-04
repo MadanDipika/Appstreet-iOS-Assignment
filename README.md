@@ -12,6 +12,6 @@ Appstreet-iOS-Assignment is a photo search app using Flickr's search API.
 * checking if download task for url already exists 
 * switching between high and low task priorities depending upon whether cell corresponding to download task is visible or not.
 6. Image caching
-7. Zooming image transision animation same as Apple's photo app.
-8. Using thumbnail image in collection view and correnponding high resolution image on full screen.
+7. Zooming image transition animation same as of Apple's photo app.
+8. Using small sized image for collection view and correnponding high resolution image on full screen.
 
