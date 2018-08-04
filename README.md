@@ -7,7 +7,7 @@ Appstreet-iOS-Assignment is a photo search app using Flickr's search API.
 1. Using UISearchController in the title view of Navigation bar.
 2. Containing an option to switch among 2, 3 or 4 number of items per row.
 3. Flickr Photo search API integration.
-4. Lazily image fetching for collection view.
+4. Lazily image loading for collection view.
 5. Handling multiple download tasks effectively by 
 * checking if download task for url already exists 
 * switching between high and low task priorities depending upon whether cell corresponding to download task is visible or not.
