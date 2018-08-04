@@ -19,20 +19,26 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="qEy-tz-gZn">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <color key="barTintColor" red="0.57509121191776646" green="0.26294950655940563" blue="0.36736884510109841" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <textAttributes key="titleTextAttributes">
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </textAttributes>
+                        <textAttributes key="largeTitleTextAttributes">
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        </textAttributes>
                     </navigationBar>
                     <connections>
+                        <outlet property="delegate" destination="4eV-dh-xz2" id="WQz-Ws-6jp"/>
                         <segue destination="ITE-KN-h8q" kind="relationship" relationship="rootViewController" id="omS-bP-ntZ"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jQU-ir-VyV" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <customObject id="4eV-dh-xz2" customClass="ZoomTransitioningDelegate" customModule="AppStreetAssignment" customModuleProvider="target"/>
             </objects>
             <point key="canvasLocation" x="-229" y="-114"/>
         </scene>
-        <!--AppStreet-->
+        <!--Main View Controller-->
         <scene sceneID="pe7-L2-UZE">
             <objects>
                 <collectionViewController id="ITE-KN-h8q" customClass="MainViewController" customModule="AppStreetAssignment" customModuleProvider="target" sceneMemberID="viewController">
@@ -57,7 +63,6 @@
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeHolder" translatesAutoresizingMaskIntoConstraints="NO" id="Rtl-CZ-gIB" customClass="CachedImageView" customModule="AppStreetAssignment" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="100" id="EI5-M7-QeU"/>
                                                 <constraint firstAttribute="width" secondItem="Rtl-CZ-gIB" secondAttribute="height" multiplier="1:1" id="VWy-zh-Ns3"/>
                                             </constraints>
                                         </imageView>
@@ -97,7 +102,7 @@
                             <outlet property="delegate" destination="ITE-KN-h8q" id="p0z-0Y-xD9"/>
                         </connections>
                     </collectionView>
-                    <navigationItem key="navigationItem" title="AppStreet" id="SgL-hI-jyC">
+                    <navigationItem key="navigationItem" id="SgL-hI-jyC">
                         <barButtonItem key="rightBarButtonItem" title="Options" id="cKX-mq-nOB">
                             <color key="tintColor" name="Color1"/>
                             <connections>
@@ -121,8 +126,8 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="G6k-ki-Vux" customClass="CachedImageView" customModule="AppStreetAssignment" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                             </imageView>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="yeH-db-nRo">
-                                <rect key="frame" x="177" y="323" width="20" height="20"/>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="yeH-db-nRo">
+                                <rect key="frame" x="169" y="315" width="37" height="37"/>
                                 <color key="color" red="0.57509121190000001" green="0.26294950659999999" blue="0.36736884510000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </activityIndicatorView>
                         </subviews>
@@ -137,7 +142,7 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="9S2-Ul-FPh"/>
                     </view>
-                    <navigationItem key="navigationItem" id="NBk-xb-ZiY"/>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="NBk-xb-ZiY"/>
                     <connections>
                         <outlet property="activityIndicator" destination="yeH-db-nRo" id="5Ne-XB-hJ1"/>
                         <outlet property="imageView" destination="G6k-ki-Vux" id="KGM-9V-gWT"/>

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		9AA7E2DF2115AFF500D2C117 /* CustomFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA7E2DE2115AFF500D2C117 /* CustomFooterView.swift */; };
+		9AA7E2E12115C29000D2C117 /* ZoomTransitionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA7E2E02115C29000D2C117 /* ZoomTransitionDelegate.swift */; };
+		9AA7E2E32115F12700D2C117 /* CacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AA7E2E22115F12700D2C117 /* CacheManager.swift */; };
 		9AD82853210C944F00991F16 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AD82852210C944F00991F16 /* AppDelegate.swift */; };
 		9AD82858210C944F00991F16 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9AD82856210C944F00991F16 /* Main.storyboard */; };
 		9AD8285A210C945A00991F16 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9AD82859210C945A00991F16 /* Assets.xcassets */; };
@@ -23,6 +25,8 @@
 
 /* Begin PBXFileReference section */
 		9AA7E2DE2115AFF500D2C117 /* CustomFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomFooterView.swift; sourceTree = "<group>"; };
+		9AA7E2E02115C29000D2C117 /* ZoomTransitionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomTransitionDelegate.swift; sourceTree = "<group>"; };
+		9AA7E2E22115F12700D2C117 /* CacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheManager.swift; sourceTree = "<group>"; };
 		9AD8284F210C944F00991F16 /* AppStreetAssignment.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppStreetAssignment.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9AD82852210C944F00991F16 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9AD82857210C944F00991F16 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -95,6 +99,7 @@
 				9AD82890210CBBF900991F16 /* ImageCollectionViewCell.swift */,
 				9AD8289E210CFF7D00991F16 /* CachedImageView.swift */,
 				9AA7E2DE2115AFF500D2C117 /* CustomFooterView.swift */,
+				9AA7E2E02115C29000D2C117 /* ZoomTransitionDelegate.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -113,6 +118,7 @@
 			children = (
 				9AD82896210CCB7C00991F16 /* FlickrProvider.swift */,
 				9AD82898210CCF0B00991F16 /* NetworkManager.swift */,
+				9AA7E2E22115F12700D2C117 /* CacheManager.swift */,
 			);
 			path = "Network Interaction";
 			sourceTree = "<group>";
@@ -195,6 +201,8 @@
 				9AD82894210CC08E00991F16 /* FlickrPhoto.swift in Sources */,
 				9AD8289D210CFB3000991F16 /* MainViewController.swift in Sources */,
 				9AD82853210C944F00991F16 /* AppDelegate.swift in Sources */,
+				9AA7E2E32115F12700D2C117 /* CacheManager.swift in Sources */,
+				9AA7E2E12115C29000D2C117 /* ZoomTransitionDelegate.swift in Sources */,
 				9AA7E2DF2115AFF500D2C117 /* CustomFooterView.swift in Sources */,
 				9AD82891210CBBF900991F16 /* ImageCollectionViewCell.swift in Sources */,
 				9AD828A1210DD92C00991F16 /* DetailViewController.swift in Sources */,

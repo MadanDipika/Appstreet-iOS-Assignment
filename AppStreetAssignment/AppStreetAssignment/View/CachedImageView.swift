@@ -9,37 +9,29 @@
 import UIKit
 class CachedImageView: UIImageView {
     
-    private static let imageCache = NSCache<NSString, UIImage>()
     private var urlKey: String! = nil
     
-    func loadImage(atURL url: URL?, placeHolder: Bool = true, completion: (()-> Void)? = nil){
-        guard let url = url else{
-            if placeHolder {
-                self.image = UIImage(named: "placeHolder")
-            }
-            completion?()
-            return
-        }
+    func loadImage(atURL url: URL, placeHolder: Bool = true, completion: (()-> Void)? = nil){
         
         self.urlKey = url.absoluteString
-        if let cachedImage = CachedImageView.imageCache.object(forKey: self.urlKey as NSString){
+        if let cachedImage = CacheManager.shared.retrieveCachedImage(for: urlKey){
             completion?()
             self.image = cachedImage
             return
         }else{
-            if placeHolder {
+            if placeHolder{
                 self.image = UIImage(named: "placeHolder")
             }
             
             NetworkManager.shared.download(fromURL: url) {[weak self, url] (data, error) in
                 guard error == nil, let data = data else{
-                    completion?()
+                        completion?()
                     return
                 }
                 
                 if let image = UIImage(data: data){
                     //Cache image for future use
-                    CachedImageView.imageCache.setObject(image, forKey: url.absoluteString as NSString)
+                    CacheManager.shared.cacheImage(image, forKey: url.absoluteString)
                     DispatchQueue.main.async {
                         completion?()
                         if url.absoluteString == self?.urlKey{
@@ -52,4 +44,6 @@ class CachedImageView: UIImageView {
             }
         }
     }
+    
+    
 }

@@ -47,16 +47,13 @@ class NetworkManager {
         }else{
             let downloadTask = session?.downloadTask(with: url, completionHandler: {[weak self] (tempLocalUrl, response, error) in
                 let completionHandler = self?.downloadTasks[url]?.completionHandler
-                if self?.isSuccessResponse(response, error) ?? false{
-                    do{
-                        let data = try Data(contentsOf: tempLocalUrl!)
-                        completionHandler?(data, nil)
-                    }catch{
-                        completionHandler?(nil, nil)
-                    }
+                if self?.isSuccessResponse(response, error) ?? false, let data = self?.dataFrom(tempLocalUrl){
+                    completionHandler?(data, nil)
                 }else{
                     completionHandler?(nil, error)
                 }
+                
+                self?.downloadTasks.removeValue(forKey: url)
             })
             let task = DownloadTask(completionHandler: completion)
             downloadTasks[url] = task
@@ -74,6 +71,25 @@ class NetworkManager {
             }
         }else{
             return false
+        }
+    }
+    
+    private func dataFrom(_ tempLocalUrl: URL?) -> Data!{
+        guard let tempLocalUrl = tempLocalUrl else{
+            return nil
+        }
+        
+        do{
+            let data = try Data(contentsOf: tempLocalUrl)
+            return data
+        }catch{
+            return nil
+        }
+    }
+    func reducePriorityOfTask(withURL url: URL){
+        if downloadTasks.keys.contains(url){
+            let downloadTask = downloadTasks[url]
+            downloadTask?.priority = URLSessionTask.lowPriority
         }
     }
 }

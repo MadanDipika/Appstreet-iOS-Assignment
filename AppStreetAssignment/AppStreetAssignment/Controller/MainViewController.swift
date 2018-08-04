@@ -21,11 +21,13 @@ private struct MainViewControllerConstants{
     static let optionsForItemsPerRow: Array<Int> = [2, 3, 4]
     static let cellPadding: CGFloat = 10.0
     static let defaultNumberOfColumns = 4
-    static let imageCollectionViewCell = "ImageCollectionViewCell"
+    static let cellIdentifier = "ImageCollectionViewCell"
+    static let footerIdentifier = "CustomFooterView"
     static let itemsPerPage = 25
     
     struct Messages{
-    static let itemsNeededAlertSheetMessage = "How many items should each row have?"
+        static let itemsNeededAlertSheetMessage = "How many items should each row have?"
+        static let searchDefaultPlaceholder = "Search"
     }
 }
 
@@ -38,9 +40,10 @@ class MainViewController: UICollectionViewController {
     fileprivate var searchString: String? = nil
     fileprivate var searckTask: DispatchWorkItem? = nil
     fileprivate var isLoading: Bool = false
+    fileprivate var zooimingCellIndexPath: IndexPath? = nil
     fileprivate var isFulfillingSearchConditions: Bool{
         get{
-            if let searchText = searchController.searchBar.text, searchText.count >= 3{
+            if let searchText = searchController.searchBar.text{
                 searchString = searchText
                 return true
             }else{
@@ -49,7 +52,7 @@ class MainViewController: UICollectionViewController {
         }
         
     }
-
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -71,7 +74,7 @@ class MainViewController: UICollectionViewController {
         for item in MainViewControllerConstants.optionsForItemsPerRow{
             alertSheet.addAction(UIAlertAction(title: String(item), style: .default, handler: {[weak self] action in
                 self?.itemsPerRow = Int(action.title ?? "") ?? MainViewControllerConstants.defaultNumberOfColumns
-                    self?.collectionView?.reloadData()
+                self?.collectionView?.reloadData()
             }))
         }
         
@@ -79,9 +82,9 @@ class MainViewController: UICollectionViewController {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
         if let cell = sender as? ImageCollectionViewCell,
             let indexPath = self.collectionView?.indexPath(for: cell) {
+            zooimingCellIndexPath = indexPath
             
             guard let detailViewController = segue.destination as? DetailViewController else{ return }
             detailViewController.photo = photosDataSource![indexPath.item]
@@ -92,10 +95,13 @@ class MainViewController: UICollectionViewController {
         guard let searchString = searchString else{return}
         delegate?.searchPhotos(forSearchString: searchString, pageNumber: pageNumber, andItemsPerPage: MainViewControllerConstants.itemsPerPage, completion: {[weak self](results, error) in
             self?.isLoading = false
-            if let _ = error{
-                //TODO: Show Error
-            }else{
-                completion(results)
+            DispatchQueue.main.async {
+                if error != nil || results?.count == 0{
+                    self?.showError(error: error ?? "No Results Found")
+                }else{
+                    completion(results)
+                }
+                self?.collectionView?.reloadData()
             }
         })
         isLoading = true
@@ -105,11 +111,17 @@ class MainViewController: UICollectionViewController {
         let currentPage = (photosDataSource?.count ?? 0)/MainViewControllerConstants.itemsPerPage
         search(forPage: currentPage+1, completion:{[weak self] (results) in
             guard let results = results else {return}
-            DispatchQueue.main.async {
-                self?.photosDataSource?.append(contentsOf: results)
-                self?.collectionView?.reloadData()
-            }
+            self?.photosDataSource?.append(contentsOf: results)
         })
+    }
+    
+    fileprivate func showError(error: String) {
+        let alert = UIAlertController(title: "Error", message: error, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Okay!", style: .default, handler: { action in
+            self.searchController.searchBar.placeholder = MainViewControllerConstants.Messages.searchDefaultPlaceholder
+            self.searchString = nil
+        }))
+        self.present(alert, animated: true, completion: nil)
     }
 }
 
@@ -122,7 +134,7 @@ extension MainViewController{
     
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell{
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainViewControllerConstants.imageCollectionViewCell, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MainViewControllerConstants.cellIdentifier, for: indexPath)
         
         return cell
     }
@@ -134,12 +146,16 @@ extension MainViewController{
         
         guard let currentDataSourceSize = photosDataSource?.count else{return}
         if currentDataSourceSize - indexPath.row == (2 * itemsPerRow){
-           searchNextPage()
+            searchNextPage()
         }
     }
     
+    override func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        (cell as! ImageCollectionViewCell).reducePriorityOfDownloadtaskForCell()
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-            return CGSize(width: collectionView.bounds.size.width, height: 55)
+        return CGSize(width: collectionView.bounds.size.width, height: 55)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
@@ -147,7 +163,7 @@ extension MainViewController{
     }
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "CustomFooterView", for: indexPath) as! CustomFooterView
+        let footerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: MainViewControllerConstants.footerIdentifier, for: indexPath) as! CustomFooterView
         isLoading ? footerView.loader.startAnimating(): footerView.loader.stopAnimating()
         return footerView
     }
@@ -176,10 +192,7 @@ extension MainViewController: UICollectionViewDelegateFlowLayout{
 //        if isFulfillingSearchConditions{
 //            search(forPage: 0, completion: {[weak self] results in
 //                guard let results = results else{return}
-//                DispatchQueue.main.async {
-//                    self?.photosDataSource = results
-//                    self?.collectionView?.reloadData()
-//                }
+//                self?.photosDataSource = results
 //            })
 //        }
 //    }
@@ -190,15 +203,28 @@ extension MainViewController: UISearchBarDelegate{
         if isFulfillingSearchConditions{
             search(forPage: 0, completion: {[weak self] results in
                 guard let results = results else{return}
-                DispatchQueue.main.async {
-                    self?.photosDataSource = results
-                    self?.collectionView?.reloadData()
-                }
+                self?.photosDataSource = results
             })
+            self.photosDataSource?.removeAll()
+            self.collectionView?.reloadData()
+            
+            searchController.isActive = false
+            searchBar.placeholder = searchString
         }
-        self.photosDataSource?.removeAll()
-        self.collectionView?.reloadData()
-        searchController.isActive = false
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar){
+        searchBar.placeholder = MainViewControllerConstants.Messages.searchDefaultPlaceholder
+    }
+}
+
+extension MainViewController: ZoomingViewController{
+    func zoomingImageView(for transition: ZoomTransitioningDelegate) -> UIImageView? {
+        guard let zooimingCellIndexPath = zooimingCellIndexPath, let zoomingCell: ImageCollectionViewCell = self.collectionView?.cellForItem(at: zooimingCellIndexPath) as? ImageCollectionViewCell else{
+            return nil
+        }
+        
+        return zoomingCell.imageView
     }
 }
 
