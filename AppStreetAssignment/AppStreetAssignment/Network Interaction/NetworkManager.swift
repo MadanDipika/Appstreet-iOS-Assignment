@@ -12,14 +12,8 @@ typealias RequestCompletionHandler = (Data?, Error?) -> Void
 
 class DownloadTask:  URLSessionTask{
     var completionHandler: RequestCompletionHandler
-    var url: String? = nil
-    init(completionHandler: @escaping RequestCompletionHandler, url: String = "abc") {
+    init(completionHandler: @escaping RequestCompletionHandler) {
         self.completionHandler = completionHandler
-        self.url = url
-    }
-    
-    func display(){
-        print("Task for \(self.url!))")
     }
 }
 
@@ -58,16 +52,15 @@ class NetworkManager {
                         let data = try Data(contentsOf: tempLocalUrl!)
                         completionHandler?(data, nil)
                     }catch{
-                            completionHandler?(nil, nil)
+                        completionHandler?(nil, nil)
                     }
                 }else{
                     completionHandler?(nil, error)
                 }
             })
-        let task = DownloadTask(completionHandler: completion, url: url.absoluteString)
-             downloadTasks[url] = task
+            let task = DownloadTask(completionHandler: completion)
+            downloadTasks[url] = task
             downloadTask?.resume()
-            task.display()
         }
     }
     

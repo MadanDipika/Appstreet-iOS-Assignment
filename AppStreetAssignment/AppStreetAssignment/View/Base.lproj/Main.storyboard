@@ -43,7 +43,7 @@
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="ptL-AY-CdS">
                             <size key="itemSize" width="100" height="100"/>
                             <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="footerReferenceSize" width="50" height="50"/>
                             <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells>
@@ -75,6 +75,23 @@
                                 </connections>
                             </collectionViewCell>
                         </cells>
+                        <collectionReusableView key="sectionFooterView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="CustomFooterView" id="9x3-T3-ds8" customClass="CustomFooterView" customModule="AppStreetAssignment" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="100" width="375" height="50"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="9Ve-bf-1P2">
+                                    <rect key="frame" x="169.5" y="7" width="37" height="37"/>
+                                    <color key="color" red="0.57509121190000001" green="0.26294950659999999" blue="0.36736884510000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </activityIndicatorView>
+                            </subviews>
+                            <constraints>
+                                <constraint firstItem="9Ve-bf-1P2" firstAttribute="centerY" secondItem="9x3-T3-ds8" secondAttribute="centerY" id="K4b-1Y-UKK"/>
+                                <constraint firstItem="9Ve-bf-1P2" firstAttribute="centerX" secondItem="9x3-T3-ds8" secondAttribute="centerX" id="OLT-UO-cFr"/>
+                            </constraints>
+                            <connections>
+                                <outlet property="loader" destination="9Ve-bf-1P2" id="mhg-LY-yey"/>
+                            </connections>
+                        </collectionReusableView>
                         <connections>
                             <outlet property="dataSource" destination="ITE-KN-h8q" id="kJD-ig-xhq"/>
                             <outlet property="delegate" destination="ITE-KN-h8q" id="p0z-0Y-xD9"/>
