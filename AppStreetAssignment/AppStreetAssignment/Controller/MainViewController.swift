@@ -55,7 +55,10 @@ class MainViewController: UICollectionViewController {
         
         delegate = FlickrProvider()
         
-        searchController.searchResultsUpdater = self
+        //If Search call needed on each update of search string change
+        //searchController.searchResultsUpdater = self
+        
+        searchController.searchBar.delegate = self
         self.definesPresentationContext = true
         self.navigationItem.titleView = searchController.searchBar
         self.navigationItem.titleView?.tintColor = .white
@@ -151,8 +154,23 @@ extension MainViewController: UICollectionViewDelegateFlowLayout{
     }
 }
 
-extension MainViewController: UISearchResultsUpdating{
-    func updateSearchResults(for searchController: UISearchController) {
+//If Search call needed on each update of search string change
+//extension MainViewController: UISearchResultsUpdating{
+//    func updateSearchResults(for searchController: UISearchController) {
+//        if isFulfillingSearchConditions{
+//            search(forPage: 0, completion: {[weak self] results in
+//                guard let results = results else{return}
+//                DispatchQueue.main.async {
+//                    self?.photosDataSource = results
+//                    self?.collectionView?.reloadData()
+//                }
+//            })
+//        }
+//    }
+//}
+
+extension MainViewController: UISearchBarDelegate{
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         if isFulfillingSearchConditions{
             search(forPage: 0, completion: {[weak self] results in
                 guard let results = results else{return}

@@ -8,26 +8,35 @@
 
 import Foundation
 
-typealias DataRequestCompletionHandler = (Data?, Error?) -> Void
-class NetworkManager {
-    static let shared: NetworkManager = NetworkManager()
-    var foregroundSession: URLSession? = nil
-    
-    private init(){
-        foregroundSession = URLSession(configuration: .default)
+typealias RequestCompletionHandler = (Data?, Error?) -> Void
+
+class DownloadTask:  URLSessionTask{
+    var completionHandler: RequestCompletionHandler
+    var url: String? = nil
+    init(completionHandler: @escaping RequestCompletionHandler, url: String = "abc") {
+        self.completionHandler = completionHandler
+        self.url = url
     }
     
-    func request(withURL url: URL, completion: @escaping DataRequestCompletionHandler){
-        let dataTask = foregroundSession?.dataTask(with: url, completionHandler: { (data, response, error) in
-            if let httpResponse: HTTPURLResponse = response as? HTTPURLResponse{
-                switch httpResponse.statusCode{
-                case 200...202:
-                    completion(data, nil)
-                    break
-                default:
-                    completion(nil, nil)
-                    break
-                }
+    func display(){
+        print("Task for \(self.url!))")
+    }
+}
+
+class NetworkManager {
+    static let shared: NetworkManager = NetworkManager()
+    private var session: URLSession? = nil
+    private var downloadTasks = [URL: DownloadTask]()
+    
+    
+    private init(){
+        session = URLSession(configuration: .default)
+    }
+    
+    func request(withURL url: URL, completion: @escaping RequestCompletionHandler){
+        let dataTask = session?.dataTask(with: url, completionHandler: {[weak self] (data, response, error) in
+            if self?.isSuccessResponse(response, error) ?? false{
+                completion(data, nil)
             }else{
                 completion(nil, error)
             }
@@ -36,27 +45,42 @@ class NetworkManager {
     }
     
     
-    func download(fromURL url: URL, completion: @escaping DataRequestCompletionHandler) {
-        let downloadTask = foregroundSession?.downloadTask(with: url, completionHandler: { (tempLocalUrl, response, error) in
-            if let httpResponse: HTTPURLResponse = response as? HTTPURLResponse{
-                switch httpResponse.statusCode{
-                case 200...202:
+    func download(fromURL url: URL, completion: @escaping RequestCompletionHandler) {
+        if downloadTasks.keys.contains(url){
+            let downloadTask = downloadTasks[url]
+            downloadTask?.completionHandler = completion
+            downloadTask?.priority = URLSessionTask.highPriority
+        }else{
+            let downloadTask = session?.downloadTask(with: url, completionHandler: {[weak self] (tempLocalUrl, response, error) in
+                let completionHandler = self?.downloadTasks[url]?.completionHandler
+                if self?.isSuccessResponse(response, error) ?? false{
                     do{
-                    let data = try Data(contentsOf: tempLocalUrl!)
-                    completion(data, nil)
+                        let data = try Data(contentsOf: tempLocalUrl!)
+                        completionHandler?(data, nil)
                     }catch{
-                        completion(nil, nil)
+                            completionHandler?(nil, nil)
                     }
-                    break
-                default:
-                    completion(nil, nil)
-                    break
+                }else{
+                    completionHandler?(nil, error)
                 }
-            }else{
-                    completion(nil, nil)
+            })
+        let task = DownloadTask(completionHandler: completion, url: url.absoluteString)
+             downloadTasks[url] = task
+            downloadTask?.resume()
+            task.display()
+        }
+    }
+    
+    private func isSuccessResponse(_ response: URLResponse?,_ error: Error?)-> Bool{
+        if let httpResponse: HTTPURLResponse = response as? HTTPURLResponse{
+            switch httpResponse.statusCode{
+            case 200...202:
+                return true
+            default:
+                return false
             }
-        })
-        
-        downloadTask?.resume()
+        }else{
+            return false
+        }
     }
 }
